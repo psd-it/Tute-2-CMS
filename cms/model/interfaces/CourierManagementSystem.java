@@ -49,4 +49,20 @@ public interface CourierManagementSystem
      * Displays all accepted jobs
      */
     void displayAllJobs();
+
+
+    /**
+     * Remove a vehicle from the manage system
+     *
+     * @param vehicleRego ID of the vehicle
+     */
+    void removeVehicle(String vehicleRego);
+
+    /**
+     * Remove a vehicle from the manage system
+     *
+     * @param vehicleRego ID of the vehicle
+     * @return Vehicle with the parameter identifier
+     */
+    Vehicle getVehicle(String vehicleRego);
 }

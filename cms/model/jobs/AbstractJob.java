@@ -1,31 +1,19 @@
-package cms.model;
+package cms.model.jobs;
+
+import cms.model.interfaces.Job;
 
 import java.text.DateFormat;
 
-public class Job
+public abstract class AbstractJob implements Job
 {
-    private int id;
-    private double kms;
-    private double wearAndTearCost;
-    private String scheduledDate;
-    private boolean isValid;
+    protected int id;
+    protected double kms;
+    protected double wearAndTearCost;
+    protected String scheduledDate;
+    protected boolean isValid;
 
-    /**
-     * Constructs a new job
-     *
-     * @param id
-     *  Unique identifier of the job
-     * @param distance
-     *  Distance in kilometers, must be a positive number greater than 0
-     * @param wearAndTearCost
-     *  Expected wear and tear cost on the vehicle, must be a positive number greater than 0
-     */
-    public Job(int id, double distance, double wearAndTearCost)
+    public AbstractJob(int id, double distance, double wearAndTearCost)
     {
-        if (id < 0|| distance <= 0 || wearAndTearCost <= 0)
-        {
-            throw new IllegalArgumentException("Job parameters are invalid!");
-        }
         this.id = id;
         this.kms = distance;
         this.wearAndTearCost = wearAndTearCost;
@@ -37,19 +25,10 @@ public class Job
      *
      * @return true if accepted, false if rejected
      */
-    public boolean isValid()
+    @Override
+    public boolean isAccepted()
     {
         return isValid;
-    }
-
-    /**
-     * Dictates if the job is accepted
-     *
-     * @param valid true if accepted, false if rejected
-     */
-    public void setValid(boolean valid)
-    {
-        isValid = valid;
     }
 
     /**
@@ -57,6 +36,7 @@ public class Job
      *
      * @return the vehicleRego
      */
+    @Override
     public int getId()
     {
         return id;
@@ -67,19 +47,10 @@ public class Job
      *
      * @return the kms
      */
-    public double getKms()
+    @Override
+    public double getDistance()
     {
         return kms;
-    }
-
-    /**
-     * ?The anticipated wear and tear cost of this job
-     *
-     * @return the wearAndTearCost
-     */
-    public double getWearAndTearCost()
-    {
-        return wearAndTearCost;
     }
 
     /**
@@ -87,6 +58,7 @@ public class Job
      *
      * @return the scheduledDate
      */
+    @Override
     public String getScheduledDate()
     {
         return scheduledDate;
@@ -97,6 +69,7 @@ public class Job
      *
      * @return profit
      */
+    @Override
     public double getProfit()
     {
         return  wearAndTearCost / 2;
@@ -107,6 +80,7 @@ public class Job
      *
      * @return totalCost
      */
+    @Override
     public double getTotalCost()
     {
         return wearAndTearCost + getProfit();
@@ -119,8 +93,29 @@ public class Job
     public String toString()
     {
         return String.format("Id: %d, Distance: %.2f, Cost: $%.2f, Expense: $%.2f, Profit: $%.2f",
-                             getId(), getKms(), getTotalCost(), getWearAndTearCost(), getProfit());
+                             getId(), getDistance(), getTotalCost(), getWearAndTearCost(), getProfit());
     }
 
 
+    /**
+     * Dictates if the job is accepted
+     *
+     * @param valid true if accepted, false if rejected
+     */
+    @Override
+    public void accept(boolean valid)
+    {
+        this.isValid = valid;
+    }
+
+    /**
+     * ?The anticipated wear and tear cost of this job
+     *
+     * @return the wearAndTearCost
+     */
+    @Override
+    public double getWearAndTearCost()
+    {
+        return wearAndTearCost;
+    }
 }

@@ -7,9 +7,9 @@ public interface Vehicle {
 	/**
 	 * Adds the passed in value to the odometer reading
 	 *
-	 * @param odo the number of Kilometers to add to the odometer
+	 * @param mileage the number of Kilometers to add to the odometer
 	 */
-	void addKmToOdometer(double odo);
+	void addMileage(double mileage);
 
 	/**
 	 * The registration of the vehicle
@@ -43,7 +43,7 @@ public interface Vehicle {
 	 *
 	 * @return odometer
 	 */
-	double getOdo();
+	double getMileage();
 
 	/**
 	 * Defines the recommended service interval for the vehicle
@@ -63,5 +63,14 @@ public interface Vehicle {
 	 * Records the odometer reading of a service
 	 */
 	void recordService();
+
+	/**
+	 * Attempt to schedule a job
+	 *
+	 * @param id       Identifier for this job
+	 * @param distance distance travelled
+	 * @return job it will only be applied to the vehicle if it's accepted
+	 */
+	Job scheduleJob(int id, double distance);
 
 }

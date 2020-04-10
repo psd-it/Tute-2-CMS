@@ -3,12 +3,14 @@ package cms.model;
 import cms.exceptions.VehicleDoesNotExistException;
 import cms.model.interfaces.CourierManagementSystem;
 import cms.model.interfaces.Vehicle;
+import cms.model.interfaces.Job;
+import cms.model.jobs.LandTransport;
 
 import java.util.*;
 
 public class CourierManagementSystemImpl implements CourierManagementSystem
 {
-    private HashMap<String, Vehicle> vehicles;
+    private Map<String, Vehicle> vehicles;
     private Collection<Job> jobs;
 
     public CourierManagementSystemImpl()
@@ -51,21 +53,11 @@ public class CourierManagementSystemImpl implements CourierManagementSystem
     	{
     		throw new VehicleDoesNotExistException("No vehicle exists in the fleet with rego " + rego);
     	}
-    	// get vehicle ref for simplicity
-        Vehicle vehicle = this.vehicles.get(rego);
     	// Create proposed job
-    	Job job = new Job(jobs.size(), distance, vehicle.getWearRate() * distance);
-    	// Check if this job is valid
-    	job.setValid((vehicle.getOdo() - vehicle.getLastServiced()) + distance < vehicle.getServiceInterval());
+    	Job job = this.vehicles.get(rego).scheduleJob(jobs.size(), distance);
     	// Track job whether valid or not
     	jobs.add(job);
-
-    	if(job.isValid())
-    	{
-    	    // Record new odometer for a valid job
-    		vehicle.addKmToOdometer(distance);
-    	}
-    	return job.isValid();
+    	return job.isAccepted();
     }
 
     @Override
@@ -82,11 +74,39 @@ public class CourierManagementSystemImpl implements CourierManagementSystem
     {
     	for(Job j : jobs)
     	{
-    	    if (j.isValid())
+    	    if (j.isAccepted())
             {
                 System.out.println(j);
             }
     	}
+    }
+
+    /**
+     * Remove a vehicle from the manage system
+     *
+     * @param vehicleRego ID of the vehicle
+     */
+    @Override
+    public void removeVehicle(String vehicleRego)
+    {
+        Vehicle vehicle = vehicles.remove(vehicleRego);
+        if (vehicle == null)
+        {
+            throw new IllegalArgumentException(String.format("Vehicle with registration %s doesn't exist", vehicleRego));
+        }
+    }
+
+    /**
+     * Remove a vehicle from the manage system
+     *
+     * @param vehicleRego ID of the vehicle
+     * @return Vehicle with the parameter identifier
+     */
+    @Override
+    public Vehicle getVehicle(String vehicleRego)
+    {
+        // Would have rather thrown an exception than just return null here
+        return vehicles.get(vehicleRego);
     }
 }
 

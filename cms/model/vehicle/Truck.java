@@ -1,6 +1,8 @@
-package cms.model;
+package cms.model.vehicle;
 
-public class Truck extends AbstractVehicle
+import cms.model.AbstractTransport;
+
+public class Truck extends AbstractTransport
 {
     private final int capacity;
     private final double wearRate = 0.5;
@@ -26,6 +28,6 @@ public class Truck extends AbstractVehicle
     public String toString()
     {
         return String.format("Truck: Reg_Number: %s, Make: %s, Model: %s, Year: %d, Capacity: %d \nOdometer: %.2fkm, Last Serviced: %.2fkm, Service Interval: %.2fkm",
-                             getReg(), getMake(), getModel(), getYear(), getCapacity(), getOdo(), getLastServiced(), getServiceInterval());
+                             getReg(), getMake(), getModel(), getYear(), getCapacity(), getMileage(), getLastServiced(), getServiceInterval());
     }
 }

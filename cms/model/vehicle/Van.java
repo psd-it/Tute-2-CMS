@@ -1,6 +1,10 @@
-package cms.model;
+package cms.model.vehicle;
 
-public class Van extends cms.model.AbstractVehicle
+import cms.model.AbstractTransport;
+import cms.model.interfaces.Job;
+import cms.model.jobs.LandTransport;
+
+public class Van extends AbstractTransport
 {
     private final double wearRate = 0.6;
 

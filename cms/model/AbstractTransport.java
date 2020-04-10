@@ -1,14 +1,17 @@
 package cms.model;
 
+import cms.exceptions.VehicleDoesNotExistException;
+import cms.model.interfaces.Job;
 import cms.model.interfaces.Vehicle;
+import cms.model.jobs.LandTransport;
 
-public abstract class AbstractVehicle implements Vehicle
+public abstract class AbstractTransport implements Vehicle
 {
     private String reg, make, model;
     private int year;
     private double odo, serviceInterval, lastServiced;
 
-    public AbstractVehicle(String reg, String make, String model, int year, double odo, double serviceInterval)
+    public AbstractTransport(String reg, String make, String model, int year, double odo, double serviceInterval)
     {
         this.reg = reg;
         this.make = make;
@@ -29,7 +32,7 @@ public abstract class AbstractVehicle implements Vehicle
     }
 
     @Override
-    public final void recordService()
+    public void recordService()
     {
         this.lastServiced = this.odo;
     }
@@ -38,13 +41,13 @@ public abstract class AbstractVehicle implements Vehicle
 	 * @see cms.model.Vehicle#setOdo(double)
 	 */
     @Override
-	public final void addKmToOdometer(double odo)
+	public final void addMileage(double mileage)
     {
-        if (odo < 0)
+        if (mileage < 0)
         {
             throw new IllegalArgumentException("Odometer can only take a positive number");
         }
-        this.odo = this.odo + odo;
+        this.odo = this.odo + mileage;
     }
 
     /* (non-Javadoc)
@@ -87,7 +90,7 @@ public abstract class AbstractVehicle implements Vehicle
 	 * @see cms.model.Vehicle#getOdo()
 	 */
     @Override
-	public double getOdo()
+	public double getMileage()
     {
         return odo;
     }
@@ -101,16 +104,33 @@ public abstract class AbstractVehicle implements Vehicle
         return serviceInterval;
     }
 
-    /* (non-Javadoc)
-	 * @see cms.model.Vehicle#getWearRate()
-	 */
+    /**
+     * Attempt to schedule a job
+     *
+     * @param id       Identifier for this job
+     * @param distance distance travelled
+     * @return a land transport job, it will only be applied to the vehicle if it's accepted.
+     */
     @Override
-	public abstract double getWearRate();
+    public Job scheduleJob(int id, double distance)
+    {
+        // Create proposed job
+        Job job = new LandTransport(id, distance, this.getWearRate() * distance);
+        // Check if this job is valid
+        job.accept((this.getMileage() - this.getLastServiced()) + distance < this.getServiceInterval());
+
+        if(job.isAccepted())
+        {
+            // Record new odometer for a valid job
+            this.addMileage(distance);
+        }
+        return job;
+    }
 
     @Override
     public String toString()
     {
         return String.format("Reg_Number: %s, Make: %s, Model: %s, Year: %d \nOdometer: %.2fkm, Last Serviced: %.2fkm, Service Interval: %.2fkm",
-                                getReg(), getMake(), getModel(), getYear(), getOdo(), getLastServiced(), getServiceInterval());
+                             getReg(), getMake(), getModel(), getYear(), getMileage(), getLastServiced(), getServiceInterval());
     }
 }

@@ -1,8 +1,8 @@
 package cms.app;
 
-import cms.model.Van;
+import cms.model.vehicle.Van;
 import cms.model.CourierManagementSystemImpl;
-import cms.model.Truck;
+import cms.model.vehicle.Truck;
 import cms.model.interfaces.CourierManagementSystem;
 
 
